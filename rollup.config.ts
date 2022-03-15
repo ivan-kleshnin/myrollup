@@ -1,35 +1,77 @@
+import jsxPlugin from "acorn-jsx"
+import resolvePlugin from "@rollup/plugin-node-resolve"
+import {babel as babelPlugin} from "@rollup/plugin-babel"
 import typescriptPlugin from "@rollup/plugin-typescript"
 import {defineConfig} from "rollup"
 import dtsPlugin from "rollup-plugin-dts"
 
 const packageJson = require("./package.json")
 
+type Foo = {
+  foo: "FOO"
+}
+
+console.log(packageJson.module.replace(".js", ".jsx"))
+
 export default defineConfig([
-  // Source Code
+  // TSX -> JSX
   {
     input: "src/index.ts",
     output: [
       {
-        file: packageJson.main,
+        file: packageJson.main.replace(".js", ".jsx"),
         format: "cjs",
         sourcemap: true,
-        // name: "react-ts-lib" -- do we need this name for `cjs`?
       },
       {
-        file: packageJson.module,
+        file: packageJson.module.replace(".js", ".jsx"),
         format: "esm",
-        sourcemap: true
+        sourcemap: true,
       }
     ],
     external: Object.keys(packageJson.peerDependencies),
     plugins: [
+      // TODO use babelPlugin with typescript preset
+      // .TSX -> .JSX ->(babel)-> .JS version produces invalid code
+      resolvePlugin(),
       typescriptPlugin({tsconfig: "./tsconfig.json"}),
     ],
+    acornInjectPlugins: [jsxPlugin() as () => unknown],
   },
 
-  // Type Declaration
+  // JSX -> JS (1)
+  // {
+  //   input: packageJson.main.replace(".js", ".jsx"),
+  //   output: {
+  //     file: packageJson.main,
+  //     format: "cjs",
+  //     sourcemap: true,
+  //   },
+  //   external: Object.keys(packageJson.peerDependencies),
+  //   plugins: [
+  //     resolvePlugin(),
+  //     babelPlugin({babelHelpers: "bundled"}),
+  //   ],
+  // },
+
+  // JSX -> JS (2)
+  // {
+  //   input: packageJson.module.replace(".js", ".jsx"),
+  //   output: {
+  //     file: packageJson.module,
+  //     format: "esm",
+  //     sourcemap: true,
+  //   },
+  //   external: Object.keys(packageJson.peerDependencies),
+  //   plugins: [
+  //     resolvePlugin(),
+  //     babelPlugin({babelHelpers: "bundled"}),
+  //   ],
+  // },
+
+  // *.D.TS -> INDEX.D.TS
   {
-    input: "dist/esm/types/index.d.ts",
+    input: "dist/esm/types/src/index.d.ts",
     output: {file: "dist/index.d.ts", format: "esm"},
     plugins: [
       dtsPlugin()
@@ -48,3 +90,4 @@ https://www.npmjs.com/package/rollup-plugin-terser
 🍣 A Rollup plugin to minify generated es bundle. Uses Terser under the hood.
 */
 
+// https://github.com/rollup/plugins/issues/72
