@@ -14,62 +14,53 @@ type Foo = {
 console.log(packageJson.module.replace(".js", ".jsx"))
 
 export default defineConfig([
-  // TSX -> JSX
+  // Transpile sources to CJS and ESM
   {
     input: "src/index.ts",
     output: [
       {
-        file: packageJson.main.replace(".js", ".jsx"),
+        file: packageJson.main,
         format: "cjs",
         sourcemap: true,
       },
       {
-        file: packageJson.module.replace(".js", ".jsx"),
+        file: packageJson.module,
         format: "esm",
         sourcemap: true,
       }
     ],
     external: Object.keys(packageJson.peerDependencies),
     plugins: [
-      // TODO use babelPlugin with typescript preset
-      // .TSX -> .JSX ->(babel)-> .JS version produces invalid code
-      resolvePlugin(),
-      typescriptPlugin({tsconfig: "./tsconfig.json"}),
+      resolvePlugin({
+        extensions: [".ts", ".tsx"/*, ".js", ".jsx"*/]
+      }),
+      babelPlugin({
+        babelHelpers: "bundled",
+        extensions: [".ts", ".tsx"/*, ".js", ".jsx"*/]
+      }),
     ],
-    acornInjectPlugins: [jsxPlugin() as () => unknown],
   },
 
-  // JSX -> JS (1)
-  // {
-  //   input: packageJson.main.replace(".js", ".jsx"),
-  //   output: {
-  //     file: packageJson.main,
-  //     format: "cjs",
-  //     sourcemap: true,
-  //   },
-  //   external: Object.keys(packageJson.peerDependencies),
-  //   plugins: [
-  //     resolvePlugin(),
-  //     babelPlugin({babelHelpers: "bundled"}),
-  //   ],
-  // },
+  // Transpile sources to type definitions
+  {
+    input: "src/index.ts",
+    output: [
+      {
+        file: packageJson.module,
+        format: "esm",
+        sourcemap: true,
+      }
+    ],
+    external: Object.keys(packageJson.peerDependencies),
+    plugins: [
+      resolvePlugin({
+        extensions: [".ts", ".tsx"/*, ".js", ".jsx"*/]
+      }),
+      typescriptPlugin({tsconfig: "./tsconfig.json"}),
+    ],
+  },
 
-  // JSX -> JS (2)
-  // {
-  //   input: packageJson.module.replace(".js", ".jsx"),
-  //   output: {
-  //     file: packageJson.module,
-  //     format: "esm",
-  //     sourcemap: true,
-  //   },
-  //   external: Object.keys(packageJson.peerDependencies),
-  //   plugins: [
-  //     resolvePlugin(),
-  //     babelPlugin({babelHelpers: "bundled"}),
-  //   ],
-  // },
-
-  // *.D.TS -> INDEX.D.TS
+  // Concat type definitions into a single file
   {
     input: "dist/esm/types/src/index.d.ts",
     output: {file: "dist/index.d.ts", format: "esm"},
@@ -80,9 +71,6 @@ export default defineConfig([
 ])
 
 /*
-https://www.npmjs.com/package/@rollup/plugin-node-resolve
-🍣 A Rollup plugin which locates modules using the Node resolution algorithm, for using third party modules in node_modules
-
 https://www.npmjs.com/package/@rollup/plugin-commonjs
 🍣 A Rollup plugin to convert CommonJS modules to ES6, so they can be included in a Rollup bundle
 
@@ -91,3 +79,4 @@ https://www.npmjs.com/package/rollup-plugin-terser
 */
 
 // https://github.com/rollup/plugins/issues/72
+// https://github.com/wclr/yalc
