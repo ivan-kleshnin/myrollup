@@ -1,9 +1,0 @@
-{
-  "version": "v1",
-  "packages": {
-    "myrollup": {
-      "signature": "0b89f9301d7ca272636fe82726c086fe",
-      "file": true
-    }
-  }
-}
