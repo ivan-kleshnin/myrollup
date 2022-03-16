@@ -14,6 +14,25 @@ type Foo = {
 console.log(packageJson.module.replace(".js", ".jsx"))
 
 export default defineConfig([
+  // Transpile sources to type definitions
+  {
+    input: "src/index.ts",
+    output: [
+      {
+        file: packageJson.module,
+        format: "esm",
+        sourcemap: true,
+      }
+    ],
+    external: Object.keys(packageJson.peerDependencies),
+    plugins: [
+      resolvePlugin({
+        extensions: [".ts", ".tsx"/*, ".js", ".jsx"*/]
+      }),
+      typescriptPlugin({tsconfig: "./tsconfig.json"}),
+    ],
+  },
+
   // Transpile sources to CJS and ESM
   {
     input: "src/index.ts",
@@ -38,25 +57,6 @@ export default defineConfig([
         babelHelpers: "bundled",
         extensions: [".ts", ".tsx"/*, ".js", ".jsx"*/]
       }),
-    ],
-  },
-
-  // Transpile sources to type definitions
-  {
-    input: "src/index.ts",
-    output: [
-      {
-        file: packageJson.module,
-        format: "esm",
-        sourcemap: true,
-      }
-    ],
-    external: Object.keys(packageJson.peerDependencies),
-    plugins: [
-      resolvePlugin({
-        extensions: [".ts", ".tsx"/*, ".js", ".jsx"*/]
-      }),
-      typescriptPlugin({tsconfig: "./tsconfig.json"}),
     ],
   },
 
