@@ -4,8 +4,8 @@ import {babel as babelPlugin} from "@rollup/plugin-babel"
 import typescriptPlugin from "@rollup/plugin-typescript"
 import {defineConfig} from "rollup"
 import dtsPlugin from "rollup-plugin-dts"
-
-const packageJson = require("./package.json")
+import {terser as terserPlugin} from "rollup-plugin-terser"
+import packageJson from "./package.json"
 
 type Foo = {
   foo: "FOO"
@@ -40,11 +40,13 @@ export default defineConfig([
       {
         file: packageJson.main,
         format: "cjs",
+        plugins: [terserPlugin()],
         sourcemap: true,
       },
       {
         file: packageJson.module,
         format: "esm",
+        plugins: [terserPlugin()],
         sourcemap: true,
       }
     ],
