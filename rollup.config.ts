@@ -6,12 +6,6 @@ import dtsPlugin from "rollup-plugin-dts"
 import {terser as terserPlugin} from "rollup-plugin-terser"
 import packageJson from "./package.json"
 
-type Foo = {
-  foo: "FOO"
-}
-
-console.log(packageJson.module.replace(".js", ".jsx"))
-
 export default defineConfig([
   // Transpile sources to type definitions
   {
@@ -74,9 +68,6 @@ export default defineConfig([
 /*
 https://www.npmjs.com/package/@rollup/plugin-commonjs
 🍣 A Rollup plugin to convert CommonJS modules to ES6, so they can be included in a Rollup bundle
-
-https://www.npmjs.com/package/rollup-plugin-terser
-🍣 A Rollup plugin to minify generated es bundle. Uses Terser under the hood.
 */
 
 // https://github.com/rollup/plugins/issues/72

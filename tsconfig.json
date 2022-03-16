@@ -2,7 +2,7 @@
   // Config reference: https://aka.ms/tsconfig.json
   "compilerOptions": {
     // Language and Environment
-    "target": "es2015", // Set the JavaScript language version for emitted JavaScript and include compatible library declarations.
+    "target": "ES2015", // Set the JavaScript language version for emitted JavaScript and include compatible library declarations.
     "jsx": "react", // Specify what JSX code is generated.
 
     // Modules
