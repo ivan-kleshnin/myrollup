@@ -1,4 +1,3 @@
-import jsxPlugin from "acorn-jsx"
 import resolvePlugin from "@rollup/plugin-node-resolve"
 import {babel as babelPlugin} from "@rollup/plugin-babel"
 import typescriptPlugin from "@rollup/plugin-typescript"
