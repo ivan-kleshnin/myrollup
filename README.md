@@ -9,3 +9,5 @@ TypeScript compiler directly.
 Babel is gradually becoming obsolete. In the future:
 - Either Styled-JSX is updated to support another compilation tool, and we update accordingly.
 - Or we switch to another CSS-IN-JS implementation. A lot of cool tools are now mature enough.
+
+Hint: use Yalc to develop locally.
